@@ -8,6 +8,10 @@ from app.routes import router
 import logging
 import os
 
+from app.schemas import (
+    StatusResponse
+)
+
 # 配置日志
 logging.basicConfig(
     level=logging.INFO if not settings.debug else logging.DEBUG,
@@ -54,11 +58,13 @@ if os.path.exists(static_dir):
     logger.info(f"静态文件已从 {static_dir} 挂载")
 
 
-# 根路径 - 重定向到 demo 页面
-@app.get("/")
-async def root():
-    """重定向到 demo 页面"""
-    return RedirectResponse(url="/static/index.html", status_code=302)
+
+@app.get("/", response_model=StatusResponse)
+async def status():
+    """
+    健康检查接口
+    """
+    return StatusResponse(status="live", version="1.0.0")
 
 
 if __name__ == "__main__":

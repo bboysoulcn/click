@@ -4,6 +4,7 @@ from app.database import Base
 import re
 
 
+
 class Counter(Base):
     __tablename__ = "counters"
     

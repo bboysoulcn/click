@@ -8,7 +8,7 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql+asyncpg://click:click_password@db:5432/click
-      - ALLOWED_ORIGINS=http://127.0.0.1:8000,http://localhost:8000,https://yourdomain.com
+      - ALLOWED_ORIGINS=http://127.0.0.1:8000,http://localhost:8000,https://yourdomain.com,https://www.bboy.app
       - DEBUG=False
       - RATE_LIMIT_REQUESTS=60
       - RATE_LIMIT_WINDOW=3600
@@ -16,8 +16,6 @@ services:
       db:
         condition: service_healthy
     restart: unless-stopped
-    networks:
-      - click-network
 
   db:
     image: postgres:15-alpine
@@ -36,12 +34,6 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-    networks:
-      - click-network
 
 volumes:
   postgres_data:
-
-networks:
-  click-network:
-    driver: bridge
