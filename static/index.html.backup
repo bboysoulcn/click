@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>click - Appreciation Button Demo</title>
+    <link rel="stylesheet" href="click.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .section {
+            margin: 40px 0;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .section p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .button-demo {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .demo-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .demo-item h3 {
+            font-size: 1em;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature h3 {
+            color: #3498db;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+
+
+
+    </style>
+</head>
+
+        <p class="subtitle">Privacy-focused appreciation buttons for your website</p>
+
+        <div class="section">
+            <h2>Try it out!</h2>
+            <p>Click the buttons below to see click in action. Your choice is saved locally - refresh the page to see the count persist.</p>
+            
+            <div class="button-demo">
+                <div class="demo-item">
+                    <h3>Heart (default)</h3>
+                    <button class="click-button" data-icon="heart" aria-hidden="true"></button>
+                </div>
+                
+                <div class="demo-item">
+                    <h3>Thumbs Up</h3>
+                    <button class="click-button" data-icon="thumbs_up" aria-hidden="true"></button>
+                </div>
+                
+                <div class="demo-item">
+                    <h3>Upvote</h3>
+                    <button class="click-button" data-icon="upvote" aria-hidden="true"></button>
+                </div>
+
+                <div class="demo-item">
+                    <h3>Custom Emoji</h3>
+                    <button class="click-button" data-icon="🎉" aria-hidden="true"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Multiple Buttons</h2>
+            <p>Use different slugs to track different pages or sections:</p>
+            
+            <div class="button-demo">
+                <div class="demo-item">
+                    <h3>Page 1</h3>
+                    <button class="click-button" data-slug="/page-1" data-icon="heart" aria-hidden="true"></button>
+                </div>
+                
+                <div class="demo-item">
+                    <h3>Page 2</h3>
+                    <button class="click-button" data-slug="/page-2" data-icon="heart" aria-hidden="true"></button>
+                </div>
+                
+                <div class="demo-item">
+                    <h3>Page 3</h3>
+                    <button class="click-button" data-slug="/page-3" data-icon="heart" aria-hidden="true"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Features</h2>
+            <div class="features">
+                <div class="feature">
+                    <h3>🔒 Privacy First</h3>
+                    <p>No user tracking, no IPs stored, no cookies.</p>
+                </div>
+                
+                <div class="feature">
+                    <h3>⚡ Lightweight</h3>
+                    <p>Pure vanilla JavaScript, minimal footprint.</p>
+                </div>
+                
+                <div class="feature">
+                    <h3>♿ Accessible</h3>
+                    <p>Full keyboard navigation and screen reader support.</p>
+                </div>
+                
+                <div class="feature">
+                    <h3>🎨 Customizable</h3>
+                    <p>Built-in icons and emoji support, easy styling.</p>
+                </div>
+                
+                <div class="feature">
+                    <h3>🚀 Self-Hosted</h3>
+                    <p>Complete control over your data.</p>
+                </div>
+                
+                <div class="feature">
+                    <h3>🛡️ Rate Limited</h3>
+                    <p>Protection against abuse built-in.</p>
+                </div>
+            </div>
+        </div>
+
+
+            <p><strong>1. Add the script to your page:</strong></p>
+            <pre>&lt;script defer src="http://localhost:8000/static/click.js"&gt;&lt;/script&gt;</pre>
+            
+            <p><strong>2. Add a button:</strong></p>
+            <pre>&lt;button class="click-button" aria-hidden="true"&gt;&lt;/button&gt;</pre>
+            
+            <p><strong>3. Style it (optional):</strong></p>
+            <pre>&lt;link rel="stylesheet" href="http://localhost:8000/static/click.css"&gt;</pre>
+            
+            <p>That's it! The button will automatically display with a heart icon and show the current count.</p>
+        </div>
+
+        <div class="section">
+            <h2>Customization</h2>
+            <p><strong>Use different icons:</strong></p>
+            <pre>&lt;!-- Built-in icons: heart, thumbs_up, upvote --&gt;
+&lt;button class="click-button" data-icon="thumbs_up" aria-hidden="true"&gt;&lt;/button&gt;
+
+&lt;!-- Any emoji --&gt;
+&lt;button class="click-button" data-icon="💯" aria-hidden="true"&gt;&lt;/button&gt;</pre>
+            
+            <p><strong>Custom slug for multiple buttons:</strong></p>
+            <pre>&lt;button class="click-button" data-slug="/custom-page" aria-hidden="true"&gt;&lt;/button&gt;</pre>
+
+            <p>Built with ❤️ using Python & FastAPI</p>
+            <p>Inspired by <a href="https://github.com/welpo/click" target="_blank" style="color: #3498db;">welpo/click</a></p>
+        <div class="section">
+            <h2>Debug Tools</h2>
+            <p><button onclick="clearClickStorage()">Clear Click History</button> - Reset all button states</p>
+            <p><button onclick="showStorage()">Show Storage</button> - View current localStorage</p>
+            <p><button onclick="testAPI()">Test API</button> - Test API connectivity</p>
+        </div>
+
+        <div class="footer">
+        </div>
+
+    <script src="click.js"></script>
+        <div class="section">
+            <p><button onclick="clearClickStorage()">Clear Click History</button> - Reset all button states</p>
+            <p><button onclick="showStorage()">Show Storage</button> - View current localStorage</p>
+            <p><button onclick="testAPI()">Test API</button> - Test API connectivity</p>
+        </div>

@@ -1,0 +1,6 @@
+需要删除的文件：
+1. README_CN.md - 已合并到 README.md
+2. PROJECT_SUMMARY.md - 英文项目总结
+3. QUICKSTART.md - 英文快速开始
+4. nginx.conf - 不需要 nginx 配置
+5. setup.sh - 可选，不是核心功能

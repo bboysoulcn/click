@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: click-app
+
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - click-network
+
+  db:
+    image: postgres:15-alpine
+    container_name: click-db
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=click
+      - POSTGRES_PASSWORD=click_password
+      - POSTGRES_DB=click
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U click"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - click-network
+
+volumes:
+  postgres_data:
+
+networks:
+  click-network:
+    driver: bridge
