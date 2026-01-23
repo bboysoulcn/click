@@ -59,13 +59,18 @@ class Counter(Base):
         return cleaned
 
 
+
+
 class RateLimit(Base):
     __tablename__ = "rate_limits"
-    
+
     identifier_hash = Column(BigInteger, primary_key=True)
     request_count = Column(BigInteger, nullable=False, default=1, server_default=text("1"))
     created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
-    
+
     __table_args__ = (
+        # 优化速率限制查询的复合索引
+        Index("idx_rate_limits_hash_created", "identifier_hash", "created_at"),
+        # 单独的时间索引用于清理过期记录
         Index("idx_rate_limits_created", "created_at"),
     )
