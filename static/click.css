@@ -392,3 +392,13 @@
         user-select: none;
     }
 }
+-e 
+/* Custom theme colors */
+.click-button {
+    border-color: #ff8e2d;
+    color: #ff8e2d;
+}
+.click-button:hover:not([aria-disabled="true"]) {
+    background: #ff8e2d;
+    color: white;
+}
