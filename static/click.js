@@ -222,7 +222,6 @@ function setupIcon(button, iconElement) {
           button.setAttribute('aria-disabled', 'true');
           button.classList.add('clicked');
           toggleFill(icon, true);
-          showFeedback(button, 'Already clicked', 'info');
         }
 
         const handleInteraction = async (event) => {
@@ -235,7 +234,6 @@ function setupIcon(button, iconElement) {
 
           if (currentStorage || currentDisabled === 'true') {
             log(`Button ${index} blocked - already clicked`);
-            showFeedback(button, 'Already clicked', 'info');
             return;
           }
 
