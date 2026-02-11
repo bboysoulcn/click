@@ -21,4 +21,4 @@ class IncrementHitsResponse(BaseModel):
 
 class StatusResponse(BaseModel):
     status: str = "live"
-    version: str = "1.0.0"
+    version: str = "1.0.1"

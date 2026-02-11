@@ -33,7 +33,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Click - 点赞按钮 API",
     description="注重隐私的页面点击计数和点赞按钮系统",
-    version="1.0.0",
+    version="1.0.1",
     docs_url="/docs" if settings.debug else None,
     redoc_url="/redoc" if settings.debug else None,
     lifespan=lifespan
@@ -64,7 +64,7 @@ async def status():
     """
     健康检查接口
     """
-    return StatusResponse(status="live", version="1.0.0")
+    return StatusResponse(status="live", version="1.0.1")
 
 
 if __name__ == "__main__":

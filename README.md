@@ -167,7 +167,7 @@ const API_URL = 'http://你的域名.com/api';
 ```json
 {
   "status": "live",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
 ```
 
