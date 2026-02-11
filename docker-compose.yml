@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    image: ghcr.io/bboysoulcn/click:latest
     container_name: click-app
     ports:
       - "8000:8000"
