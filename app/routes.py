@@ -144,7 +144,6 @@ async def increment_hits(
         raise HTTPException(status_code=500, detail="内部服务器错误")
 
 
--e 
 @router.get("/status", response_model=StatusResponse)
 async def status():
     return StatusResponse()
