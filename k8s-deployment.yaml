@@ -1,161 +1,36 @@
-apiVersion: v1
-kind: Namespace
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: click
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: click-config
-  namespace: click
-data:
-  POSTGRES_USER: "click"
-  POSTGRES_PASSWORD: "click_password"
-  POSTGRES_DB: "click"
-  DATABASE_URL: "postgresql+asyncpg://click:click_password@click-db:5432/click"
-  ALLOWED_ORIGINS: "http://127.0.0.1:8000,http://localhost:8000,https://yourdomain.com,https://www.bboy.app"
-  DEBUG: "False"
-  RATE_LIMIT_REQUESTS: "60"
-  RATE_LIMIT_WINDOW: "3600"
-  HOST: "0.0.0.0"
-  PORT: "8000"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgres-pvc
-  namespace: click
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: click-db
   namespace: click
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: click-db
+      app: click
   template:
     metadata:
       labels:
-        app: click-db
+        app: click
     spec:
       containers:
-      - name: postgres
-        image: postgres:15-alpine
-        ports:
-        - containerPort: 5432
-        env:
-        - name: POSTGRES_USER
-          valueFrom:
-            configMapKeyRef:
-              name: click-config
-              key: POSTGRES_USER
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            configMapKeyRef:
-              name: click-config
-              key: POSTGRES_PASSWORD
-        - name: POSTGRES_DB
-          valueFrom:
-            configMapKeyRef:
-              name: click-config
-              key: POSTGRES_DB
-        volumeMounts:
-        - name: postgres-storage
-          mountPath: /var/lib/postgresql/data
-        readinessProbe:
-          exec:
-            command:
-            - pg_isready
-            - -U
-            - click
-          initialDelaySeconds: 15
-          periodSeconds: 10
-      volumes:
-      - name: postgres-storage
-        persistentVolumeClaim:
-          claimName: postgres-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: click-db
-  namespace: click
-spec:
-  selector:
-    app: click-db
-  ports:
-  - port: 5432
-    targetPort: 5432
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: click-app
-  namespace: click
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: click-app
-  template:
-    metadata:
-      labels:
-        app: click-app
-    spec:
-      initContainers:
-      - name: wait-for-db
-        image: postgres:15-alpine
-        command: ['sh', '-c', 'until pg_isready -h click-db -p 5432 -U click; do echo waiting for db; sleep 2; done;']
-      containers:
-      - name: click-app
+      - name: click
         image: ghcr.io/bboysoulcn/click:latest
         ports:
         - containerPort: 8000
         env:
         - name: DATABASE_URL
-          valueFrom:
-            configMapKeyRef:
-              name: click-config
-              key: DATABASE_URL
+          value: "postgresql://click:click@click-db:5432/click"
         - name: ALLOWED_ORIGINS
-          valueFrom:
-            configMapKeyRef:
-              name: click-config
-              key: ALLOWED_ORIGINS
-        - name: DEBUG
-          valueFrom:
-            configMapKeyRef:
-              name: click-config
-              key: DEBUG
+          value: "http://localhost:3000"
         - name: RATE_LIMIT_REQUESTS
-          valueFrom:
-            configMapKeyRef:
-              name: click-config
-              key: RATE_LIMIT_REQUESTS
+          value: "100"
         - name: RATE_LIMIT_WINDOW
-          valueFrom:
-            configMapKeyRef:
-              name: click-config
-              key: RATE_LIMIT_WINDOW
+          value: "60"
         - name: HOST
-          valueFrom:
-            configMapKeyRef:
-              name: click-config
-              key: HOST
+          value: "0.0.0.0"
         - name: PORT
-          valueFrom:
-            configMapKeyRef:
-              name: click-config
-              key: PORT
+          value: "8000"
         readinessProbe:
           httpGet:
             path: /api/status
@@ -172,11 +47,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: click-app
+  name: click
   namespace: click
 spec:
   selector:
-    app: click-app
+    app: click
   ports:
   - port: 80
     targetPort: 8000
@@ -188,7 +63,7 @@ metadata:
   name: click-ingress
   namespace: click
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
   - host: your-click-domain.com  # 替换为你的域名
@@ -198,6 +73,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: click-app
+            name: click
             port:
               number: 80
