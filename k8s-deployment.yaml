@@ -9,23 +9,16 @@ metadata:
   name: click-config
   namespace: click
 data:
+  POSTGRES_USER: "click"
+  POSTGRES_PASSWORD: "click_password"
+  POSTGRES_DB: "click"
+  DATABASE_URL: "postgresql+asyncpg://click:click_password@click-db:5432/click"
   ALLOWED_ORIGINS: "http://127.0.0.1:8000,http://localhost:8000,https://yourdomain.com,https://www.bboy.app"
   DEBUG: "False"
   RATE_LIMIT_REQUESTS: "60"
   RATE_LIMIT_WINDOW: "3600"
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: click-secrets
-  namespace: click
-type: Opaque
-data:
-  # Base64 encoded values
-  POSTGRES_USER: Y2xpY2s=  # click
-  POSTGRES_PASSWORD: Y2xpY2tfcGFzc3dvcmQ=  # click_password
-  POSTGRES_DB: Y2xpY2s=  # click
-  DATABASE_URL: cG9zdGdyZXMrcGFzeW5jcGc6Ly9jbGljazpjbGlja19wYXNzd29yZEBkYjoxNTQzMi9jbGljaw==  # postgresql+asyncpg://click:click_password@db:15432/click
+  HOST: "0.0.0.0"
+  PORT: "8000"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -62,18 +55,18 @@ spec:
         env:
         - name: POSTGRES_USER
           valueFrom:
-            secretKeyRef:
-              name: click-secrets
+            configMapKeyRef:
+              name: click-config
               key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
           valueFrom:
-            secretKeyRef:
-              name: click-secrets
+            configMapKeyRef:
+              name: click-config
               key: POSTGRES_PASSWORD
         - name: POSTGRES_DB
           valueFrom:
-            secretKeyRef:
-              name: click-secrets
+            configMapKeyRef:
+              name: click-config
               key: POSTGRES_DB
         volumeMounts:
         - name: postgres-storage
@@ -130,8 +123,8 @@ spec:
         env:
         - name: DATABASE_URL
           valueFrom:
-            secretKeyRef:
-              name: click-secrets
+            configMapKeyRef:
+              name: click-config
               key: DATABASE_URL
         - name: ALLOWED_ORIGINS
           valueFrom:
@@ -154,9 +147,15 @@ spec:
               name: click-config
               key: RATE_LIMIT_WINDOW
         - name: HOST
-          value: "0.0.0.0"
+          valueFrom:
+            configMapKeyRef:
+              name: click-config
+              key: HOST
         - name: PORT
-          value: "8000"
+          valueFrom:
+            configMapKeyRef:
+              name: click-config
+              key: PORT
         readinessProbe:
           httpGet:
             path: /api/status
