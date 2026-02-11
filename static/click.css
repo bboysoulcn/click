@@ -423,3 +423,9 @@
     z-index: 10;
     white-space: nowrap;
 }
+-e 
+/* Clicked button styling */
+.click-button.clicked {
+    background: #ff8e2d;
+    color: white;
+}
