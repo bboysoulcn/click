@@ -32,4 +32,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:8000/api/status')"
 
 # Run the application
-CMD ["python", "-m", "app.main"]
+CMD ["sh", "-c", "alembic upgrade head && python -m app.main"]
