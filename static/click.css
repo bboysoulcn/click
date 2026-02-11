@@ -429,3 +429,8 @@
     background: #ff8e2d;
     color: white;
 }
+-e 
+.click-button.clicked:hover:not([aria-disabled="true"]) {
+    background: #ff8e2d;
+    color: white;
+}
