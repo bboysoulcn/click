@@ -10,8 +10,10 @@ from app.schemas import (
     StatusResponse
 )
 from app.rate_limit import rate_limiter
+from app.config import settings
 from typing import Dict
 import logging
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -130,6 +132,18 @@ async def increment_hits(
         await db.commit()
 
         new_count = result.scalar_one()
+
+        # 发送 Telegram 通知
+        if settings.telegram_bot_token and settings.telegram_chat_id:
+            try:
+                url = f"https://api.telegram.org/bot{settings.telegram_bot_token}/sendMessage"
+                data = {
+                    "chat_id": settings.telegram_chat_id,
+                    "text": f"有人点赞了！页面: {canonical_domain}{canonical_slug}, 当前计数: {new_count}"
+                }
+                requests.post(url, json=data)
+            except Exception as e:
+                logger.error(f"发送 Telegram 通知失败: {e}")
 
         return IncrementHitsResponse(
             message=f"{canonical_domain}{canonical_slug} liked! ♥️",

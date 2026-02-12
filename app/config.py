@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     rate_limit_requests: int = 60
     rate_limit_window: int = 3600  # in seconds
     
+    # Telegram Notification
+    telegram_bot_token: str = ""
+    telegram_chat_id: str = ""
+    
     class Config:
         env_file = ".env"
         case_sensitive = False
