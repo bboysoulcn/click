@@ -133,7 +133,7 @@ function setupIcon(button, iconElement) {
 
     // Get unique slugs for count fetching
     const slugs = Array.from(clickButtons).map(
-      (button) => button.dataset.slug || window.location.pathname
+      (button) => (button.dataset.slug || window.location.href) + '-' + (button.dataset.icon || 'heart')
     );
     const uniqueSlugs = [...new Set(slugs)];
     const counts = new Map();
@@ -203,7 +203,7 @@ function setupIcon(button, iconElement) {
           button.appendChild(counter);
         }
 
-        const slug = button.dataset.slug || window.location.pathname;
+        const slug = (button.dataset.slug || window.location.href) + '-' + (button.dataset.icon || 'heart');
         const count = counts.get(slug) || 0;
         counter.textContent = ` ${count}`;
         log(`Button ${index} count: ${count}`);

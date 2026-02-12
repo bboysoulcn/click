@@ -2,6 +2,7 @@ from sqlalchemy import Column, String, BigInteger, DateTime, func, Index, CheckC
 from sqlalchemy.sql import text
 from app.database import Base
 import re
+from urllib.parse import urlparse
 
 
 
@@ -43,8 +44,14 @@ class Counter(Base):
     @staticmethod
     def canonicalize_slug(raw_slug: str) -> str:
         """Canonicalize slug/path."""
+        if raw_slug.startswith(('http://', 'https://')):
+            parsed = urlparse(raw_slug)
+            cleaned = parsed.path or '/'
+        else:
+            cleaned = raw_slug
+        
         # Remove query string and fragment
-        cleaned = raw_slug.split('?')[0]
+        cleaned = cleaned.split('?')[0]
         cleaned = cleaned.split('#')[0]
         # To lowercase
         cleaned = cleaned.lower()
