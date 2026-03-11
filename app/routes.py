@@ -11,13 +11,67 @@ from app.schemas import (
 )
 from app.rate_limit import rate_limiter
 from app.config import settings
-from typing import Dict
+from typing import Dict, Optional
 import logging
-import requests
+import httpx
+from urllib.parse import unquote
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["iine"])
+
+
+async def send_telegram_notification(message: str) -> None:
+    """发送 Telegram 通知（异步）"""
+    if not settings.telegram_bot_token or not settings.telegram_chat_id:
+        return
+
+    try:
+        url = f"https://api.telegram.org/bot{settings.telegram_bot_token}/sendMessage"
+        data = {
+            "chat_id": settings.telegram_chat_id,
+            "text": message,
+            "parse_mode": "HTML"
+        }
+
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.post(url, json=data)
+            response.raise_for_status()
+
+    except httpx.HTTPStatusError as e:
+        logger.error(f"Telegram HTTP 错误: {e.response.status_code} - {e.response.text}")
+    except httpx.RequestError as e:
+        logger.error(f"Telegram 请求错误: {e}")
+    except Exception as e:
+        logger.error(f"发送 Telegram 通知失败: {e}")
+
+
+def parse_page_slug(slug: str) -> tuple[str, Optional[str]]:
+    """
+    从 slug 中解析出页面路径和图标
+
+    前端构造格式: {page_url}-{encoded_icon}
+    例如: /path/to/page-%F0%9F%91%8E
+
+    返回: (page_path, icon)
+    """
+    # 检查是否包含 URL 编码的图标（-%XX 或 -%XXXX 格式）
+    if '-%' in slug:
+        # 分离页面路径和图标
+        parts = slug.rsplit('-%', 1)
+        if len(parts) == 2:
+            page_path = parts[0]
+            # 解码图标（URL 编码的 emoji）
+            try:
+                icon = unquote('%' + parts[1])
+                return page_path, icon
+            except Exception:
+                # 解码失败，返回原始 slug
+                return slug, None
+
+    # 没有图标后缀，返回原始 slug
+    return slug, None
+
 
 
 def get_origin_from_request(request: Request) -> str:
@@ -135,15 +189,16 @@ async def increment_hits(
 
         # 发送 Telegram 通知
         if settings.telegram_bot_token and settings.telegram_chat_id:
-            try:
-                url = f"https://api.telegram.org/bot{settings.telegram_bot_token}/sendMessage"
-                data = {
-                    "chat_id": settings.telegram_chat_id,
-                    "text": f"有人点赞了！页面: {canonical_domain}{canonical_slug}, 当前计数: {new_count}"
-                }
-                requests.post(url, json=data)
-            except Exception as e:
-                logger.error(f"发送 Telegram 通知失败: {e}")
+            page_path, icon = parse_page_slug(canonical_slug)
+            
+            # 构造友好的消息格式
+            if icon:
+                message = f"🎉 有人点赞了！\n\n📄 页面: {canonical_domain}{page_path}\n👍 图标: {icon}\n📊 当前计数: {new_count}"
+            else:
+                message = f"🎉 有人点赞了！\n\n📄 页面: {canonical_domain}{page_path}\n📊 当前计数: {new_count}"
+            
+            # 异步发送通知（不阻塞主流程）
+            await send_telegram_notification(message)
 
         return IncrementHitsResponse(
             message=f"{canonical_domain}{canonical_slug} liked! ♥️",
